@@ -1,6 +1,8 @@
 %{
 MEC 529
 Adam Nebylitsa
+Kahlil Pollack-Hinds
+Group 6
 Final Project
 %}
 clear
@@ -165,8 +167,8 @@ j_not_near_v=j_not_signular(4:6,:);
 %% Part 6
 %intial guess for the angle to preform inverse kinematics on it
 theta_0=[pi/2;-pi/4;pi/2;-5*pi/4;0;3*pi/4;2*pi/3];
-inv_thetab=IK_BodyForm(Tb,theta_0,[10^-4,10^-4],B,M);
-inv_thetas=IK_SpaceForm(Ts,theta_0,[10^-4,10^-4],S,M);
+inv_thetab=IK_BodyForm(Tb1,theta_0,[10^-4,10^-4],B,M);
+inv_thetas=IK_SpaceForm(Ts1,theta_0,[10^-4,10^-4],S,M);
 %% Part 7
 %% a
 syms s1
@@ -252,6 +254,12 @@ end
 %Graphs everything for part B
 %{
 figure
+view(3)
+triad('Matrix',Ts_start,'Scale',0.2,'LineWidth',1,'linestyle','-');
+hold on
+triad('Matrix',Ts_end,'Scale',0.2,'LineWidth',1,'linestyle','-');
+hold off
+figure
 for i=1:40 % N: Number of samples
      Theta_d = [invb(:,i)];
      show(robot,Theta_d,'PreservePlot',false,'Visuals','off','Frames','on');
@@ -330,16 +338,27 @@ xlabel("Time(s)")
 T_5th=2;
 t=linspace(0,T_5th,40);
 s_5th=10*t.^3/T_5th^3-15*t.^4/T_5th^4+6*t.^5/T_5th^5;
+%points on the circle and where they start
 c=[.2;.2;.2];
 p_start=[.4;0;.2];
 alpha=3.5*pi/6;
 rho = norm(p_start-c);
+%path the system takes
 p_s(:,1)=c+[rho*cos(alpha*s_5th(1)); rho*sin(alpha*s_5th(1));0];
+%Starting to use the angles before as the inital guess for the next angle
+%to try to ensure smooth motions
 invd(:,1)=ik("b_frame",[[0 0 1; 0 1 0; -1 0 0] p_s(:,1); 0 0 0 1],[1,1,1,1,1,1],theta_start);
 for i=2:length(s_5th)
     p_s(:,i)=c+[rho*cos(alpha*s_5th(i)); rho*sin(alpha*s_5th(i));0];
     invd(:,i)=ik("b_frame",[[0 0 1; 0 1 0; -1 0 0] p_s(:,i); 0 0 0 1],[1,1,1,1,1,1],invd(:,i-1));
 end
+%[
+figure
+view(3)
+triad('Matrix',[[0 0 1; 0 1 0; -1 0 0] p_s(:,1); 0 0 0 1],'Scale',0.2,'LineWidth',1,'linestyle','-');
+hold on
+triad('Matrix',[[0 0 1; 0 1 0; -1 0 0] p_s(:,end); 0 0 0 1],'Scale',0.2,'LineWidth',1,'linestyle','-');
+hold off
 %{
 figure()
 for i=1:40 % N: Number of samples
@@ -371,10 +390,13 @@ ylabel("Angular Acceleration")
 xlabel("Time(s)")
 %}
 %% E
+%Points to travel through
 points=[.04  .3   .7  .6; 
         -.4   0 .2  .3;
         .01  .4 .3   .7;];
+%time each point is reached at
 time=[0 8 16 24];
+%path for the spline with the least jerk
 path = minjerkpolytraj(points,time,40);
 t=linspace(0,24,40);
 Tse(:,:,1)=[eye(3) path(:,1); 0 0 0 1];
@@ -414,6 +436,8 @@ ylabel("Angular Acceleration")
 xlabel("Time(s)")
 %}
 %% F
+%Making the end effector draw the letter L
+%Motion divided into 2 parts based on the 2 segments
 end_y=linspace(-.55,0,40);
 start_z=linspace(.55,0,40);
 R=[0 0 1
@@ -429,6 +453,7 @@ for i=1:length(end_y)
     Tsf(:,:,i+40)=[R [.55;end_y(i);0]; 0 0 0 1];
     invf(:,i+40)=ik("b_frame",Tsf(:,:,i+40),[1,1,1,1,1,1],invf(:,i+39));
 end
+t=linspace(0,8.5,80);
 %{
 figure()
 for i=1:80 % N: Number of samples
@@ -438,24 +463,24 @@ for i=1:80 % N: Number of samples
 end
 pe=[[ones(1,length(start_z))*.55;ones(1,length(start_z))*-.55;start_z],[ones(1,length(end_y))*.55;end_y;zeros(1,length(end_y))]];
 figure()
-plot(1:length(pe),pe)
+plot(t,pe)
 legend("X","Y","Z")
 xlabel("Time(s)")
 ylabel("Distance")
 figure()
-plot(1:length(invf),rad2deg(invf))
+plot(t,rad2deg(invf))
 legend("Joint 1","Joint 2","Joint 3","Joint 4","Joint 5","Joint 6","Joint 7")
 xlabel("Time(s)")
 ylabel("Angle")
-tdf=rad2deg((invf(:,2:end)-invf(:,1:end-1)))/1;
-tddf=(tdf(:,2:end)-tdf(:,1:end-1))/1;
+tdf=rad2deg((invf(:,2:end)-invf(:,1:end-1)))/(t(2)-t(1));
+tddf=(tdf(:,2:end)-tdf(:,1:end-1))/(t(2)-t(1));
 figure()
-plot(1:length(tdf),tdf)
+plot(t(1:end-1),tdf)
 legend("Joint 1","Joint 2","Joint 3","Joint 4","Joint 5","Joint 6","Joint 7")
 xlabel("Time(s)")
 ylabel("Angular Speed")
 figure()
-plot(1:length(tddf),tddf)
+plot(t(1:end-2),tddf)
 legend("Joint 1","Joint 2","Joint 3","Joint 4","Joint 5","Joint 6","Joint 7")
 ylabel("Angular Acceleration")
 xlabel("Time(s)")

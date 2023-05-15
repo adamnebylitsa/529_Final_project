@@ -254,6 +254,12 @@ end
 %Graphs everything for part B
 %{
 figure
+view(3)
+triad('Matrix',Ts_start,'Scale',0.2,'LineWidth',1,'linestyle','-');
+hold on
+triad('Matrix',Ts_end,'Scale',0.2,'LineWidth',1,'linestyle','-');
+hold off
+figure
 for i=1:40 % N: Number of samples
      Theta_d = [invb(:,i)];
      show(robot,Theta_d,'PreservePlot',false,'Visuals','off','Frames','on');
@@ -347,6 +353,12 @@ for i=2:length(s_5th)
     invd(:,i)=ik("b_frame",[[0 0 1; 0 1 0; -1 0 0] p_s(:,i); 0 0 0 1],[1,1,1,1,1,1],invd(:,i-1));
 end
 %{
+figure
+view(3)
+triad('Matrix',[[0 0 1; 0 1 0; -1 0 0] p_s(:,1); 0 0 0 1],'Scale',0.2,'LineWidth',1,'linestyle','-');
+hold on
+triad('Matrix',[[0 0 1; 0 1 0; -1 0 0] p_s(:,end); 0 0 0 1],'Scale',0.2,'LineWidth',1,'linestyle','-');
+hold off
 figure()
 for i=1:40 % N: Number of samples
      Theta_d = [invd(:,i)];
@@ -393,6 +405,14 @@ for i=2:length(path)
     inve(:,i)=ik("b_frame",Tse(:,:,i),[1,1,1,1,1,1],inve(:,i-1));
 end
 %{
+figure
+view(3)
+triad('Matrix',[eye(3) points(:,1); 0 0 0 1],'Scale',0.2,'LineWidth',1,'linestyle','-');
+hold on
+triad('Matrix',[eye(3) points(:,2); 0 0 0 1],'Scale',0.2,'LineWidth',1,'linestyle','-');
+triad('Matrix',[eye(3) points(:,3); 0 0 0 1],'Scale',0.2,'LineWidth',1,'linestyle','-');
+triad('Matrix',[eye(3) points(:,4); 0 0 0 1],'Scale',0.2,'LineWidth',1,'linestyle','-');
+hold off
 figure
 for i=1:40 % N: Number of samples
      Theta_d = [inve(:,i)];
@@ -442,6 +462,14 @@ for i=1:length(end_y)
 end
 t=linspace(0,8.5,80);
 %{
+figure
+view(3)
+triad('Matrix',[R [.55;-.55;.55]; 0 0 0 1],'Scale',0.2,'LineWidth',1,'linestyle','-');
+hold on
+triad('Matrix',[R [.55;-.55;0]; 0 0 0 1],'Scale',0.2,'LineWidth',1,'linestyle','-');
+triad('Matrix',[R [.55;0;0]; 0 0 0 1],'Scale',0.2,'LineWidth',1,'linestyle','-');
+axis equal
+hold off
 figure()
 for i=1:80 % N: Number of samples
      Theta_d = [invf(:,i)];
