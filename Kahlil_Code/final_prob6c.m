@@ -1,5 +1,4 @@
-clear all
-clc
+
 
 %fixed frame
 S1 = [0;0;1;   0;0;0];
@@ -12,9 +11,9 @@ S7 = [0;0;-1;   0;0.088;0];
 
 %body frame
 B1 = [0;0;-1;   0;-0.088;0];
-B2 = [0;-1;0;   (.316+.384);0;0.088];
+B2 = [0;-1;0;   (.316+.384-.107);0;0.088];
 B3 = [0;0;-1;   0;-0.088;0];
-B4 = [0;1;0;   -(.384-0.088);0;0];
+B4 = [0;1;0;   -(.384-0.107);0;-0.055];
 B5 = [0;0;-1;   0;-0.088;0];
 B6 = [0;1;0;   .107;0;-0.088];
 B7 = [0;0;1;   0;0;0];
@@ -41,8 +40,13 @@ p =  [0.088; 0; .333+.316+.384-.107];
 M = [R, p;
     0, 0, 0, 1];
 
+theta1=[deg2rad(100),deg2rad(50),deg2rad(-100),deg2rad(-150),0,deg2rad(150),deg2rad(100)]';
+Ts=FK_SpaceForm(S,M,theta1);
+Tb=FK_BodyForm(B,M,theta1);
+
 tsb = FK_SpaceForm(S, M, arb_theta1)
-guess = [.9;.9;1.4;-.9;1.1;.9;.9];
-theta_body = IK_BodyForm(tsb, guess,[0.01;0.01],B, M)
-theta_space = IK_SpaceForm(tsb, guess, [0.01;0.01], S, M)
+
+%guess = [.9;.9;1.4;-.9;1.1;.9;.9];
+theta_body = IK_BodyForm(Tb, [pi/2;-pi/4;pi/2;-5*pi/4;0;3*pi/4;2*pi/3],[0.01;0.01],B, M)
+%theta_space = IK_SpaceForm(tsb, guess, [0.01;0.01], S, M)
 

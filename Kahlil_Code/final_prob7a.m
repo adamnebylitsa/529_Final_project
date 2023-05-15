@@ -1,3 +1,5 @@
+clear all
+clc
 %home configuartions
 
 %fixed frame
@@ -32,6 +34,25 @@ J6: -0.0174533/3.75246
 
 theta_start = [1.4 -1.5 pi/4 -1 1.2 1.22 2].';
 theta_end = [1.4; -1.5; pi/2; -2; 0; 2; 0];
+
+theta_diff = theta_end - theta_start;
+
+v_lim = deg2rad([150;150;150;150;180;180;180]);
+a_lim = deg2rad([850;425;570;700;850;1140;1140]);
+
+v_max = v_lim./theta_diff
+a_max = a_lim./theta_diff
+
+v = min(v_max)
+a = min(a_max)
+
+if a < v^2
+    a = v^2-1
+end
+
+q = v^2/a
+
+
 %get rotation matrix to make M
 R = [[1;  0; 0], [0; -1; 0], [0; 0; -1]];
 p =  [0.088; 0; .333+.316+.384-.107];
@@ -43,6 +64,7 @@ M = [R, p;
 tsd_start = FK_SpaceForm(S, M, theta_start);
 tsd_end = FK_SpaceForm(S, M, theta_end);
 
-for s=1:0.1:1
+
+for i=1:0.2:
     
 end
