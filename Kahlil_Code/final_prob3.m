@@ -39,17 +39,22 @@ x =[];
 y =[];
 z =[];
 inc = 1.25;
-for i=j1_lim(1):inc:j1_lim(2)
-    for j= j2_lim(1):inc:j2_lim(2)
-        for k= j3_lim(1):inc:j3_lim(2)
-            for L= j4_lim(1):inc:j4_lim(2)
-                for m= j5_lim(1):inc:j5_lim(2)
-                    for n= j6_lim(1):inc:j6_lim(2)
-                        for o= j7_lim(1):inc:j7_lim(2)
+for i=j1_lim(1):(j1_lim(2)-j1_lim(1))/4:j1_lim(2)
+    for j= j2_lim(1):(j2_lim(2)-j2_lim(1))/4:j2_lim(2)
+        for k= j3_lim(1):(j3_lim(2)-j3_lim(1))/4:j3_lim(2)
+            for L= j4_lim(1):(j4_lim(2)-j4_lim(1))/4:j4_lim(2)
+                for m= j5_lim(1):(j5_lim(2)-j5_lim(1))/4:j5_lim(2)
+                    for n= j6_lim(1):(j6_lim(2)-j6_lim(1))/4:j6_lim(2)
+                        for o= j7_lim(1):(j7_lim(2)-j7_lim(1))/4:j7_lim(2)
                             q = FK_SpaceForm(S, M, [i; j; k; L; m; n; o]);
                             x = [x, q(1,4)];
                             y = [y, q(2,4)];
                             z = [z, q(3,4)];
+                            %{
+                            if q(3,4) < 0
+                                disp([i;j;k;L;m;n;o]);
+                            end
+                            %}
                         end
                     end
                 end
