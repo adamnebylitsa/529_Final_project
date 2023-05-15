@@ -335,13 +335,13 @@ ylabel("Angular Acceleration")
 xlabel("Time(s)")
 %}
 %% D
-T_5th=2;
+T_5th=4;
 t=linspace(0,T_5th,40);
 s_5th=10*t.^3/T_5th^3-15*t.^4/T_5th^4+6*t.^5/T_5th^5;
 %points on the circle and where they start
-c=[.2;.2;.2];
-p_start=[.4;0;.2];
-alpha=3.5*pi/6;
+c=[.4;.4;.2];
+p_start=[.4;.2;.2];
+alpha=2*pi;
 rho = norm(p_start-c);
 %path the system takes
 p_s(:,1)=c+[rho*cos(alpha*s_5th(1)); rho*sin(alpha*s_5th(1));0];
@@ -352,13 +352,7 @@ for i=2:length(s_5th)
     p_s(:,i)=c+[rho*cos(alpha*s_5th(i)); rho*sin(alpha*s_5th(i));0];
     invd(:,i)=ik("b_frame",[[0 0 1; 0 1 0; -1 0 0] p_s(:,i); 0 0 0 1],[1,1,1,1,1,1],invd(:,i-1));
 end
-%{
-figure
-view(3)
-triad('Matrix',[[0 0 1; 0 1 0; -1 0 0] p_s(:,1); 0 0 0 1],'Scale',0.2,'LineWidth',1,'linestyle','-');
-hold on
-triad('Matrix',[[0 0 1; 0 1 0; -1 0 0] p_s(:,end); 0 0 0 1],'Scale',0.2,'LineWidth',1,'linestyle','-');
-hold off
+
 figure()
 for i=1:40 % N: Number of samples
      Theta_d = [invd(:,i)];
@@ -447,9 +441,14 @@ xlabel("Time(s)")
 %Motion divided into 2 parts based on the 2 segments
 end_y=linspace(-.55,0,40);
 start_z=linspace(.55,0,40);
+T_3rd=8.5/2;
+t=linspace(0,T_3rd,40);
+s=((3*t.^2)/T_3rd^2-(2*t.^3)/T_3rd^3);
 R=[0 0 1
    0 1 0
    -1 0 0];
+end_y=-.55+s*(0+.55);
+start_z=.55+s*(0-.55);
 Tsf(:,:,1)=[R [.55;-.55;start_z(1)]; 0 0 0 1];
 invf(:,1)=ik("b_frame",Tsf(:,:,1),[1,1,1,1,1,1],theta_start);
 for i=2:length(start_z)
@@ -460,8 +459,8 @@ for i=1:length(end_y)
     Tsf(:,:,i+40)=[R [.55;end_y(i);0]; 0 0 0 1];
     invf(:,i+40)=ik("b_frame",Tsf(:,:,i+40),[1,1,1,1,1,1],invf(:,i+39));
 end
-t=linspace(0,8.5,80);
 %{
+t=linspace(0,T_3rd*2,80);
 figure
 view(3)
 triad('Matrix',[R [.55;-.55;.55]; 0 0 0 1],'Scale',0.2,'LineWidth',1,'linestyle','-');
