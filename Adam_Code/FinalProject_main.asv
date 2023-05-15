@@ -246,17 +246,20 @@ legend("Joint 1","Joint 2","Joint 3","Joint 4","Joint 5","Joint 6","Joint 7")
 T_5th=2;
 t=linspace(0,T_5th,40);
 s_5th=10*t.^3/T_5th^3-15*t.^4/T_5th^4+6*t.^5/T_5th^5;
-
+c=[.2;.2;.2];
+p_start=
 %% E
 points=[.04  .3   .7  .6; 
         -.4   0 .2  .3;
         .01  .4 .3   .7;];
 time=[0 8 16 24];
 path = minjerkpolytraj(points,time,40);
-t=linspace(0,9,40);
-for i=1:length(path)
+t=linspace(0,24,40);
+Tse(:,:,1)=[eye(3) path(:,1); 0 0 0 1];
+inve(:,1)=ik("b_frame",Tse(:,:,1),[1,1,1,1,1,1],theta_start)
+for i=2:length(path)
     Tse(:,:,i)=[eye(3) path(:,i); 0 0 0 1];
-    inve(:,i)=ik("b_frame",Tse(:,:,i),[1,1,1,1,1,1],theta_start)
+    inve(:,i)=ik("b_frame",Tse(:,:,i),[1,1,1,1,1,1],inve(:,i-1))
 end
 figure
 for i=1:40 % N: Number of samples
@@ -273,34 +276,32 @@ figure()
 plot(t(1:end-2),tdde)
 legend("Joint 1","Joint 2","Joint 3","Joint 4","Joint 5","Joint 6","Joint 7")
 %% F
-start =[.2; -.4; .7];
-mid = [.2;0;0];
-end_p = [.2;.4;.7];
-start_y=linspace(-.4,0,40);
-end_y=linspace(0,.4,40);
-start_z=linspace(.7,0,40);
-end_z=linspace(0,.7,40);
+end_y=linspace(-.55,0,40);
+start_z=linspace(.55,0,40);
 R=[0 0 1
    0 1 0
    -1 0 0];
-for i=1:length(start_y)
-    Tsf(:,:,i)=[R [.2;start_y(i);start_z(i)]; 0 0 0 1];
-    invf(:,i)=ik("b_frame",Tsf(:,:,i),[1,1,1,1,1,1],theta_start)
+Tsf(:,:,1)=[R [.55;-.55;start_z(1)]; 0 0 0 1];
+invf(:,1)=ik("b_frame",Tsf(:,:,1),[1,1,1,1,1,1],theta_start)
+for i=2:length(start_z)
+    Tsf(:,:,i)=[R [.55;-.55;start_z(i)]; 0 0 0 1];
+    invf(:,i)=ik("b_frame",Tsf(:,:,i),[1,1,1,1,1,1],invf(:,i-1))
 end
 for i=1:length(end_y)
-    Tsf(:,:,i+40)=[R [.2;end_y(i);end_z(i)]; 0 0 0 1];
-    invf(:,i+40)=ik("b_frame",Tsf(:,:,i+40),[1,1,1,1,1,1],theta_start)
+    Tsf(:,:,i+40)=[R [.55;end_y(i);0]; 0 0 0 1];
+    invf(:,i+40)=ik("b_frame",Tsf(:,:,i+40),[1,1,1,1,1,1],invf(:,i+39))
 end
+figure()
 for i=1:80 % N: Number of samples
      Theta_d = [invf(:,i)];
      show(robot,Theta_d,'PreservePlot',false,'Visuals','off','Frames','on');
      drawnow;
 end
-tdf=rad2deg((invf(:,2:end)-invf(:,1:end-1))/1;
-tddf=(tde(:,2:end)-tde(:,1:end-1))/(t(2)-t(1));
+tdf=rad2deg((invf(:,2:end)-invf(:,1:end-1)))/1;
+tddf=(tdf(:,2:end)-tdf(:,1:end-1))/1;
 figure()
-plot(t(1:end-1),tde)
+plot(1:length(tdf),tdf)
 legend("Joint 1","Joint 2","Joint 3","Joint 4","Joint 5","Joint 6","Joint 7")
 figure()
-plot(t(1:end-2),tdde)
+plot(1:length(tddf),tddf)
 legend("Joint 1","Joint 2","Joint 3","Joint 4","Joint 5","Joint 6","Joint 7")

@@ -246,7 +246,30 @@ legend("Joint 1","Joint 2","Joint 3","Joint 4","Joint 5","Joint 6","Joint 7")
 T_5th=2;
 t=linspace(0,T_5th,40);
 s_5th=10*t.^3/T_5th^3-15*t.^4/T_5th^4+6*t.^5/T_5th^5;
-
+c=[.2;.2;.2];
+p_start=[.4;0;.2];
+alpha=3.5*pi/6;
+rho = norm(p_start-c);
+p_s(:,1)=c+[rho*cos(alpha*s_5th(1)); rho*sin(alpha*s_5th(1));0];
+invd(:,1)=ik("b_frame",[[0 0 1; 0 1 0; -1 0 0] p_s(:,1); 0 0 0 1],[1,1,1,1,1,1],theta_start)
+for i=2:length(s_5th)
+    p_s(:,i)=c+[rho*cos(alpha*s_5th(i)); rho*sin(alpha*s_5th(i));0];
+    invd(:,i)=ik("b_frame",[[0 0 1; 0 1 0; -1 0 0] p_s(:,i); 0 0 0 1],[1,1,1,1,1,1],invd(:,i-1))
+end
+figure()
+for i=1:40 % N: Number of samples
+     Theta_d = [invd(:,i)];
+     show(robot,Theta_d,'PreservePlot',false,'Visuals','off','Frames','on');
+     drawnow;
+end
+tdd=rad2deg((invd(:,2:end)-invd(:,1:end-1))/(t(2)-t(1)));
+tddd=(tdd(:,2:end)-tdd(:,1:end-1))/(t(2)-t(1));
+figure()
+plot(t(1:end-1),tdd)
+legend("Joint 1","Joint 2","Joint 3","Joint 4","Joint 5","Joint 6","Joint 7")
+figure()
+plot(t(1:end-2),tddd)
+legend("Joint 1","Joint 2","Joint 3","Joint 4","Joint 5","Joint 6","Joint 7")
 %% E
 points=[.04  .3   .7  .6; 
         -.4   0 .2  .3;
@@ -275,24 +298,19 @@ figure()
 plot(t(1:end-2),tdde)
 legend("Joint 1","Joint 2","Joint 3","Joint 4","Joint 5","Joint 6","Joint 7")
 %% F
-start =[.2; -.4; .7];
-mid = [.2;0;0];
-end_p = [.2;.4;.7];
-start_y=linspace(-.5,0,40);
-end_y=linspace(0,.5,40);
-start_z=linspace(.5,0,40);
-end_z=linspace(0,.5,40);
+end_y=linspace(-.55,0,40);
+start_z=linspace(.55,0,40);
 R=[0 0 1
    0 1 0
    -1 0 0];
-Tsf(:,:,1)=[R [.8;start_y(1);start_z(1)]; 0 0 0 1];
+Tsf(:,:,1)=[R [.55;-.55;start_z(1)]; 0 0 0 1];
 invf(:,1)=ik("b_frame",Tsf(:,:,1),[1,1,1,1,1,1],theta_start)
-for i=2:length(start_y)
-    Tsf(:,:,i)=[R [.8;start_y(i);start_z(i)]; 0 0 0 1];
+for i=2:length(start_z)
+    Tsf(:,:,i)=[R [.55;-.55;start_z(i)]; 0 0 0 1];
     invf(:,i)=ik("b_frame",Tsf(:,:,i),[1,1,1,1,1,1],invf(:,i-1))
 end
 for i=1:length(end_y)
-    Tsf(:,:,i+40)=[R [.8;end_y(i);end_z(i)]; 0 0 0 1];
+    Tsf(:,:,i+40)=[R [.55;end_y(i);0]; 0 0 0 1];
     invf(:,i+40)=ik("b_frame",Tsf(:,:,i+40),[1,1,1,1,1,1],invf(:,i+39))
 end
 figure()
