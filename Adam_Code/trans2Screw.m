@@ -1,7 +1,9 @@
 %{
 MEC 529
 Adam Nebylitsa
-HW 4
+Kahlil Pollack-Hinds
+Group 6
+Final Project
 %}
 function [S,theta] = trans2Screw(T)
     [s1,s2]= size(T);

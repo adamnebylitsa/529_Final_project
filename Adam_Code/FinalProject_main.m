@@ -1,6 +1,8 @@
 %{
 MEC 529
 Adam Nebylitsa
+Kahlil Pollack-Hinds
+Group 6
 Final Project
 %}
 clear
@@ -438,6 +440,7 @@ for i=1:length(end_y)
     Tsf(:,:,i+40)=[R [.55;end_y(i);0]; 0 0 0 1];
     invf(:,i+40)=ik("b_frame",Tsf(:,:,i+40),[1,1,1,1,1,1],invf(:,i+39));
 end
+t=linspace(0,8.5,80);
 %{
 figure()
 for i=1:80 % N: Number of samples
@@ -447,24 +450,24 @@ for i=1:80 % N: Number of samples
 end
 pe=[[ones(1,length(start_z))*.55;ones(1,length(start_z))*-.55;start_z],[ones(1,length(end_y))*.55;end_y;zeros(1,length(end_y))]];
 figure()
-plot(1:length(pe),pe)
+plot(t,pe)
 legend("X","Y","Z")
 xlabel("Time(s)")
 ylabel("Distance")
 figure()
-plot(1:length(invf),rad2deg(invf))
+plot(t,rad2deg(invf))
 legend("Joint 1","Joint 2","Joint 3","Joint 4","Joint 5","Joint 6","Joint 7")
 xlabel("Time(s)")
 ylabel("Angle")
-tdf=rad2deg((invf(:,2:end)-invf(:,1:end-1)))/1;
-tddf=(tdf(:,2:end)-tdf(:,1:end-1))/1;
+tdf=rad2deg((invf(:,2:end)-invf(:,1:end-1)))/(t(2)-t(1));
+tddf=(tdf(:,2:end)-tdf(:,1:end-1))/(t(2)-t(1));
 figure()
-plot(1:length(tdf),tdf)
+plot(t(1:end-1),tdf)
 legend("Joint 1","Joint 2","Joint 3","Joint 4","Joint 5","Joint 6","Joint 7")
 xlabel("Time(s)")
 ylabel("Angular Speed")
 figure()
-plot(1:length(tddf),tddf)
+plot(t(1:end-2),tddf)
 legend("Joint 1","Joint 2","Joint 3","Joint 4","Joint 5","Joint 6","Joint 7")
 ylabel("Angular Acceleration")
 xlabel("Time(s)")

@@ -1,6 +1,8 @@
 %{
 MEC 529
 Adam Nebylitsa
+Kahlil Pollack-Hinds
+Group 6
 Final Project
 %}
 function theta = IK_SpaceForm(T_sd, theta_0, e, S,M)

@@ -1,7 +1,9 @@
 %{
 MEC 529
 Adam Nebylitsa
-HW 4
+Kahlil Pollack-Hinds
+Group 6
+Final Project
 %}
 function [T] = transform(S,theta)
     [s1,s2] = size(S);

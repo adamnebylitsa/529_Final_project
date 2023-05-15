@@ -1,7 +1,9 @@
 %{
 MEC 529
 Adam Nebylitsa
-HW 3
+Kahlil Pollack-Hinds
+Group 6
+Final Project
 %}
 function R = Rot(w, theta)
     % Tests to make sure the norm of the vector is 1. If not returns nan

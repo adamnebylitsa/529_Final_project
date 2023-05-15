@@ -1,7 +1,9 @@
 %{
 MEC 529
 Adam Nebylitsa
-HW 6
+Kahlil Pollack-Hinds
+Group 6
+Final Project
 %}
 function J_s =J_SpaceForm(S,theta)
     %creates the proper size jacobian

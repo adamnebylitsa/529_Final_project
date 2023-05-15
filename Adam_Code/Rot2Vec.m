@@ -1,7 +1,9 @@
 %{
 MEC 529
 Adam Nebylitsa
-HW 3
+Kahlil Pollack-Hinds
+Group 6
+Final Project
 %}
 function [w,theta] = Rot2Vec(R)
     %makes sure the matrix is 3 by 3, if not it returns nan.

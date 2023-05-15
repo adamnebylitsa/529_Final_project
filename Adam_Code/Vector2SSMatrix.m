@@ -1,7 +1,9 @@
 %{
 MEC 529
 Adam Nebylitsa
-HW 3
+Kahlil Pollack-Hinds
+Group 6
+Final Project
 %}
 function m = Vector2SSMatrix(v)
     [s1,s2] = size(v);

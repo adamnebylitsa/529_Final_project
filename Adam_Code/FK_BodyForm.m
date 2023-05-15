@@ -1,7 +1,9 @@
 %{
 MEC 529
 Adam Nebylitsa
-HW 5
+Kahlil Pollack-Hinds
+Group 6
+Final Project
 %}
 function T_sb = FK_BodyForm(B,M, Theta)
     [B1, n1] = size(B);
