@@ -352,7 +352,7 @@ for i=2:length(s_5th)
     p_s(:,i)=c+[rho*cos(alpha*s_5th(i)); rho*sin(alpha*s_5th(i));0];
     invd(:,i)=ik("b_frame",[[0 0 1; 0 1 0; -1 0 0] p_s(:,i); 0 0 0 1],[1,1,1,1,1,1],invd(:,i-1));
 end
-
+%{
 figure()
 for i=1:40 % N: Number of samples
      Theta_d = [invd(:,i)];
@@ -441,7 +441,7 @@ xlabel("Time(s)")
 %Motion divided into 2 parts based on the 2 segments
 end_y=linspace(-.55,0,40);
 start_z=linspace(.55,0,40);
-T_3rd=8.5/2;
+T_3rd=4/2;
 t=linspace(0,T_3rd,40);
 s=((3*t.^2)/T_3rd^2-(2*t.^3)/T_3rd^3);
 R=[0 0 1
